@@ -1,7 +1,9 @@
 """ from https://github.com/keithito/tacotron """
 from text import cleaners
 from text.symbols import symbols
+from greedy_tokenizer import GreedyTokenizer
 
+gt = GreedyTokenizer(vocab=symbols)
 
 # Mappings from symbol to numeric ID and vice versa:
 _symbol_to_id = {s: i for i, s in enumerate(symbols)}
@@ -16,12 +18,8 @@ def text_to_sequence(text, cleaner_names):
     Returns:
       List of integers corresponding to the symbols in the text
   '''
-  sequence = []
-
   clean_text = _clean_text(text, cleaner_names)
-  for symbol in clean_text:
-    symbol_id = _symbol_to_id[symbol]
-    sequence += [symbol_id]
+  sequence = [_symbol_to_id[symbol] for symbol in gt.tokenize(clean_text)]
   return sequence
 
 
@@ -32,7 +30,7 @@ def cleaned_text_to_sequence(cleaned_text):
     Returns:
       List of integers corresponding to the symbols in the text
   '''
-  sequence = [_symbol_to_id[symbol] for symbol in cleaned_text]
+  sequence = [_symbol_to_id[symbol] for symbol in gt.tokenize(cleaned_text)]
   return sequence
 
 
